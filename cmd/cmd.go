@@ -8,6 +8,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"os/user"
 	"path"
 	"io/ioutil"
 	"gopkg.in/src-d/go-git.v4"
@@ -42,7 +43,7 @@ type ReposWithErrors []RepoWithErrors
 func Run() int {
 	// Bug(komish): Does not properly check against an upstream
 	// to compare if changes have been pushed.
-	var configExists bool = true
+	var configExists = true
 	yamlContents, err := ioutil.ReadFile(configPath)
 	if err != nil {
 		// TODO(komish): Change output streams
@@ -54,7 +55,7 @@ func Run() int {
 		PrintHelp()
 		return 15
 	}
-	
+
 
 	i := os.Args[1:]
 	var d RepoFileInput
@@ -62,7 +63,7 @@ func Run() int {
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(9)
-	} 
+	}
 	cliargs := stringToRepo(i)
 	d.R = append(d.R, cliargs...)
 	var problemRepos ReposWithErrors
@@ -83,7 +84,7 @@ func Run() int {
 				c.Printf("UNCLEAN ")
 				fmt.Println(*path)
 			}
-		} 
+		}
 	}
 
 	for _, prepo := range problemRepos {
@@ -108,7 +109,7 @@ func stringToRepo(s []string) Repolist {
 	var r Repolist
 	for _, e := range s {
 		r = append(r, Repo(&e))
-	}	
+	}
 	return r
 }
 
@@ -134,9 +135,9 @@ func OpenReposAndFilter(u Repolist) (Repolist, ReposWithErrors) {
 }
 
 func homeDir() string {
-	// Bug(komish): does not properly expand shell-isms such as ~
-	if h := os.Getenv("HOME"); h != "" {
-		return h
-	}
-	return os.Getenv("USERPROFILE") // windows
+    usr, err := user.Current()
+    if err != nil {
+        return "./"
+    }
+    return usr.HomeDir
 }
