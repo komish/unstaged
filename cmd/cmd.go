@@ -17,8 +17,7 @@ import (
 )
 
 var (
-	home       = homeDir()
-	configPath = path.Join(home, ".unstaged.yaml")
+	configPath = path.Join(configDir(), ".unstaged.yaml")
 )
 
 // Repo is an indirect reference to a string.
@@ -138,10 +137,10 @@ func OpenReposAndFilter(u Repolist) (Repolist, ReposWithErrors) {
 	return fr, er
 }
 
-func homeDir() string {
-	homedir, err := os.UserHomeDir()
+func configDir() string {
+	configdir, err := os.UserConfigDir()
 	if err != nil {
 		return "./"
 	}
-	return homedir
+	return path.Join(configdir, "unstaged")
 }
