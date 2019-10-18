@@ -53,7 +53,7 @@ func Run() int {
 		// TODO(komish): Change output streams
 		configExists = false
 	}
-	if len(os.Args[1:]) <= 1 && !configExists {
+	if len(os.Args[1:]) < 1 && !configExists {
 		fmt.Printf("Not enough arguments provided and the config file ")
 		fmt.Printf("at path %s was not parsed successfully\n(Error: %s).\n\n", configPath, err)
 		PrintHelp()
