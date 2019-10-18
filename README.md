@@ -1,6 +1,7 @@
 # Unstaged
+
 Check for uncommitted changes across a set of git repositories that you configure.
 
 # License
 
-This is an MIT-Licensed package. 
+This package is under the MIT License. See [LICENSE](LICENSE).
