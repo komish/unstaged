@@ -7,34 +7,38 @@ package cmd
 
 import (
 	"fmt"
-	"os"
-	"os/user"
-	"path"
 	"io/ioutil"
+	"os"
+	"path"
+
+	"github.com/fatih/color"
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/yaml.v2"
-	"github.com/fatih/color"
 )
 
 var (
-	home = homeDir()
+	home       = homeDir()
 	configPath = path.Join(home, ".unstaged.yaml")
 )
 
 // Repo is an indirect reference to a string.
 type Repo *string
+
 // Repolist is a slice containing multiple Repo types.
 type Repolist []Repo
+
 // RepoFileInput is used to unmarshal the yaml structure.
 type RepoFileInput struct {
 	R Repolist `yaml:"repos"`
 }
+
 // RepoWithErrors takes our Repo path and stores
 // the error object encountered.
 type RepoWithErrors struct {
 	r Repo
 	e error
 }
+
 // ReposWithErrors is a slice containing multiple RepoWithErrors types.
 type ReposWithErrors []RepoWithErrors
 
@@ -55,7 +59,6 @@ func Run() int {
 		PrintHelp()
 		return 15
 	}
-
 
 	i := os.Args[1:]
 	var d RepoFileInput
@@ -103,6 +106,7 @@ func PrintHelp() {
 	fmt.Println("cases where knowledge bases are stored in source control")
 	fmt.Println("and need to be pushed upstream frequently.")
 }
+
 // stringToRepo performs the indrecting of a String slice
 // to a Repo slice and returns the resulting Repo slice.
 func stringToRepo(s []string) Repolist {
@@ -135,9 +139,9 @@ func OpenReposAndFilter(u Repolist) (Repolist, ReposWithErrors) {
 }
 
 func homeDir() string {
-    usr, err := user.Current()
-    if err != nil {
-        return "./"
-    }
-    return usr.HomeDir
+	homedir, err := os.UserHomeDir()
+	if err != nil {
+		return "./"
+	}
+	return homedir
 }
