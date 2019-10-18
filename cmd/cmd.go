@@ -137,6 +137,8 @@ func OpenReposAndFilter(u Repolist) (Repolist, ReposWithErrors) {
 	return fr, er
 }
 
+// Obtains the XDG config dir from ENV variables
+// otherwise returns the current directory
 func configDir() string {
 	configdir, err := os.UserConfigDir()
 	if err != nil {
