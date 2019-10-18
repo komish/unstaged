@@ -7,33 +7,38 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path"
-	"io/ioutil"
+
+	"github.com/fatih/color"
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/yaml.v2"
-	"github.com/fatih/color"
 )
 
 var (
-	home = homeDir()
+	home       = homeDir()
 	configPath = path.Join(home, ".unstaged.yaml")
 )
 
 // Repo is an indirect reference to a string.
 type Repo *string
+
 // Repolist is a slice containing multiple Repo types.
 type Repolist []Repo
+
 // RepoFileInput is used to unmarshal the yaml structure.
 type RepoFileInput struct {
 	R Repolist `yaml:"repos"`
 }
+
 // RepoWithErrors takes our Repo path and stores
 // the error object encountered.
 type RepoWithErrors struct {
 	r Repo
 	e error
 }
+
 // ReposWithErrors is a slice containing multiple RepoWithErrors types.
 type ReposWithErrors []RepoWithErrors
 
@@ -42,7 +47,7 @@ type ReposWithErrors []RepoWithErrors
 func Run() int {
 	// Bug(komish): Does not properly check against an upstream
 	// to compare if changes have been pushed.
-	var configExists bool = true
+	var configExists = true
 	yamlContents, err := ioutil.ReadFile(configPath)
 	if err != nil {
 		// TODO(komish): Change output streams
@@ -54,7 +59,6 @@ func Run() int {
 		PrintHelp()
 		return 15
 	}
-	
 
 	i := os.Args[1:]
 	var d RepoFileInput
@@ -62,7 +66,7 @@ func Run() int {
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(9)
-	} 
+	}
 	cliargs := stringToRepo(i)
 	d.R = append(d.R, cliargs...)
 	var problemRepos ReposWithErrors
@@ -83,7 +87,7 @@ func Run() int {
 				c.Printf("UNCLEAN ")
 				fmt.Println(*path)
 			}
-		} 
+		}
 	}
 
 	for _, prepo := range problemRepos {
@@ -102,13 +106,14 @@ func PrintHelp() {
 	fmt.Println("cases where knowledge bases are stored in source control")
 	fmt.Println("and need to be pushed upstream frequently.")
 }
+
 // stringToRepo performs the indrecting of a String slice
 // to a Repo slice and returns the resulting Repo slice.
 func stringToRepo(s []string) Repolist {
 	var r Repolist
 	for _, e := range s {
 		r = append(r, Repo(&e))
-	}	
+	}
 	return r
 }
 
@@ -134,9 +139,9 @@ func OpenReposAndFilter(u Repolist) (Repolist, ReposWithErrors) {
 }
 
 func homeDir() string {
-	// Bug(komish): does not properly expand shell-isms such as ~
-	if h := os.Getenv("HOME"); h != "" {
-		return h
+	homedir, err := os.UserHomeDir()
+	if err != nil {
+		return "./"
 	}
-	return os.Getenv("USERPROFILE") // windows
+	return homedir
 }
