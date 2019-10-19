@@ -42,3 +42,8 @@ func TestOpenReposAndFilter(t *testing.T) {
 	assert.EqualValues(t, errorString, er[0].e)
 
 }
+
+func TestRun(t *testing.T) {
+	i := Run()
+	assert.Equal(t, 0, i)
+}
