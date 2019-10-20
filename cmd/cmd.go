@@ -53,6 +53,10 @@ type ReposWithErrors []RepoWithErrors
 func Run() int {
 	pflag.Parse()
 	args := pflag.Args()
+	if showHelp || helpInArgs(args) {
+		PrintHelp()
+		return 0
+	}
 	// Bug(komish): Does not properly check against an upstream
 	// to compare if changes have been pushed.
 	var configExists = true
@@ -61,26 +65,11 @@ func Run() int {
 		// TODO(komish): Change output streams
 		configExists = false
 	}
-	if len(args) < 1 {
-		if showHelp { // Want to see if user wants help first before throwing errors at them
-			PrintHelp()
-			return 0
-		} else if !configExists {
-			fmt.Printf("Not enough arguments provided and the config file ")
-			fmt.Printf("at path %s was not parsed successfully\n(Error: %s).\n\n", configPath, err)
-			PrintHelp()
-			return 15
-		} else {
-			fmt.Printf("Not enough arguments provided")
-			PrintHelp()
-			return 15
-		}
-	}
-
-	// Check if User wants help before we go any further
-	if strings.ToLower(args[1]) == "help" {
+	if len(args) < 1 && !configExists {
+		fmt.Printf("Not enough arguments provided and the config file ")
+		fmt.Printf("at path %s was not parsed successfully\n(Error: %s).\n\n", configPath, err)
 		PrintHelp()
-		return 0
+		return 15
 	}
 
 	var d RepoFileInput
@@ -168,4 +157,13 @@ func configDir() string {
 		return "./"
 	}
 	return path.Join(configdir, "unstaged")
+}
+
+func helpInArgs(args []string) bool {
+	for _, arg := range args {
+		if strings.ToLower(arg) == "help" {
+			return true
+		}
+	}
+	return false
 }
