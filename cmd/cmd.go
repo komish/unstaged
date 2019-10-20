@@ -53,7 +53,7 @@ type ReposWithErrors []RepoWithErrors
 func Run() int {
 	pflag.Parse()
 	args := pflag.Args()
-	if showHelp || helpInArgs(args) {
+	if showHelp {
 		PrintHelp()
 		return 0
 	}
@@ -157,13 +157,4 @@ func configDir() string {
 		return "./"
 	}
 	return path.Join(configdir, "unstaged")
-}
-
-func helpInArgs(args []string) bool {
-	for _, arg := range args {
-		if strings.ToLower(arg) == "help" {
-			return true
-		}
-	}
-	return false
 }
