@@ -10,7 +10,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
-	"strings"
 
 	"github.com/fatih/color"
 	"github.com/spf13/pflag"
