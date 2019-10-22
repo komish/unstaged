@@ -12,11 +12,17 @@ import (
 	"path"
 
 	"github.com/fatih/color"
+	"github.com/spf13/pflag"
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/yaml.v2"
 )
 
+func init() {
+	pflag.BoolVarP(&showHelp, "help", "h", false, "display help")
+}
+
 var (
+	showHelp   bool
 	configPath = path.Join(configDir(), ".unstaged.yaml")
 )
 
@@ -44,6 +50,12 @@ type ReposWithErrors []RepoWithErrors
 // Run will execute the command line interface and
 // then return an exit code.
 func Run() int {
+	pflag.Parse()
+	args := pflag.Args()
+	if showHelp {
+		PrintHelp()
+		return 0
+	}
 	// Bug(komish): Does not properly check against an upstream
 	// to compare if changes have been pushed.
 	var configExists = true
@@ -52,21 +64,20 @@ func Run() int {
 		// TODO(komish): Change output streams
 		configExists = false
 	}
-	if len(os.Args[1:]) < 1 && !configExists {
+	if len(args) < 1 && !configExists {
 		fmt.Printf("Not enough arguments provided and the config file ")
 		fmt.Printf("at path %s was not parsed successfully\n(Error: %s).\n\n", configPath, err)
 		PrintHelp()
 		return 15
 	}
 
-	i := os.Args[1:]
 	var d RepoFileInput
 	err = yaml.Unmarshal(yamlContents, &d)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(9)
 	}
-	cliargs := stringToRepo(i)
+	cliargs := stringToRepo(args)
 	d.R = append(d.R, cliargs...)
 	var problemRepos ReposWithErrors
 	d.R, problemRepos = OpenReposAndFilter(d.R)
