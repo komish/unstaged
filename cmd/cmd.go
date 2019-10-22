@@ -12,6 +12,7 @@ import (
 	"path"
 
 	"github.com/fatih/color"
+	"github.com/komish/unstaged/version"
 	"github.com/spf13/pflag"
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/yaml.v2"
@@ -19,10 +20,12 @@ import (
 
 func init() {
 	pflag.BoolVarP(&showHelp, "help", "h", false, "display help")
+	pflag.BoolVarP(&showVers, "version", "v", false, "display version")
 }
 
 var (
 	showHelp   bool
+	showVers   bool
 	configPath = path.Join(configDir(), ".unstaged.yaml")
 )
 
@@ -52,6 +55,13 @@ type ReposWithErrors []RepoWithErrors
 func Run() int {
 	pflag.Parse()
 	args := pflag.Args()
+
+	if showVers {
+		fmt.Printf("Unstaged: v%s\n", version.Version)
+		fmt.Printf("  Commit: %s\n", version.CommitHash)
+		return 0
+	}
+
 	if showHelp {
 		PrintHelp()
 		return 0
