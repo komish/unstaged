@@ -9,7 +9,6 @@ GIT_COMMIT_HASH=${UNSTAGED_COMMIT_HASH}
 # export UNSTAGED_VERSION="x.x.x"
 VERSION=${UNSTAGED_VERSION}
 
-
 build:
 	make build-linux
 	make build-darwin
@@ -28,17 +27,26 @@ releases:
 	make build-rel-linux
 	make build-rel-darwin
 	make build-rel-windows
-build-rel-linux:
+
+check-env:
+ifndef UNSTAGED_COMMIT_HASH
+  $(error UNSTAGED_COMMIT_HASH is not set)
+endif
+ifndef UNSTAGED_VERSION
+	$(error UNSTAGED_VERSION is not set)
+endif
+
+build-rel-linux: check-env
 	GOOS=linux GOARCH=amd64 go build \
 			-ldflags '-X github.com/komish/unstaged/version.Version=$(VERSION) -X github.com/komish/unstaged/version.CommitHash=$(GIT_COMMIT_HASH)' \
 		 	-o $(BUILD_PATH)$(LINUX_BINARY_NAME) -v $(MAIN_PATH)
 
-build-rel-darwin:
+build-rel-darwin: check-env
 	GOOS=darwin GOARCH=amd64 go build \
 			 -ldflags '-X github.com/komish/unstaged/version.Version=$(VERSION) -X github.com/komish/unstaged/version.CommitHash=$(GIT_COMMIT_HASH)' \
 			 -o $(BUILD_PATH)$(DARWIN_BINARY_NAME) -v $(MAIN_PATH)
 
-build-rel-windows:
+build-rel-windows: check-env
 	GOOS=windows GOARCH=amd64 go build \
 			 -ldflags '-X github.com/komish/unstaged/version.Version=$(VERSION) -X github.com/komish/unstaged/version.CommitHash=$(GIT_COMMIT_HASH)' \
 			 -o $(BUILD_PATH)$(WINDOWS_BINARY_NAME) -v $(MAIN_PATH)

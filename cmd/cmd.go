@@ -57,8 +57,7 @@ func Run() int {
 	args := pflag.Args()
 
 	if showVers {
-		fmt.Printf("Unstaged: v%s\n", version.Version)
-		fmt.Printf("  Commit: %s\n", version.CommitHash)
+		fmt.Printf("Unstaged version: v%s, commit: %s", version.Version, version.CommitHash)
 		return 0
 	}
 
