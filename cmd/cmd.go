@@ -20,12 +20,14 @@ import (
 
 func init() {
 	pflag.BoolVarP(&showHelp, "help", "h", false, "display help")
-	pflag.BoolVarP(&showVers, "version", "v", false, "display version")
+	pflag.BoolVar(&showVers, "version", false, "display version")
+	pflag.BoolVarP(&verbose, "verbose", "v", false, "display verbose output")
 }
 
 var (
 	showHelp   bool
 	showVers   bool
+	verbose    bool
 	configPath = path.Join(configDir(), ".unstaged.yaml")
 )
 
@@ -105,7 +107,9 @@ func Run() int {
 				c := color.New(color.Bold, color.FgYellow)
 				c.Printf("UNCLEAN ")
 				fmt.Println(*path)
-				fmt.Printf(stat.String())
+				if verbose {
+					fmt.Printf(stat.String())
+				}
 			}
 		}
 	}
@@ -120,7 +124,9 @@ func Run() int {
 
 // PrintHelp returns help output.
 func PrintHelp() {
-	fmt.Printf("Usage:\n %s [/path/to/repo] ...\n\n", os.Args[0])
+	fmt.Printf("Usage:\n %s [--flags] [/path/to/repo] ...\n\n", os.Args[0])
+	pflag.PrintDefaults()
+	fmt.Println()
 	fmt.Println("Check through a list of provided git repositories and")
 	fmt.Println("report back if they have unstaged changes Useful for.")
 	fmt.Println("cases where knowledge bases are stored in source control")
