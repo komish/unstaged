@@ -99,12 +99,13 @@ func Run() int {
 		if stat, err := wt.Status(); err == nil {
 			if stat.IsClean() {
 				c := color.New(color.Bold, color.FgCyan)
-				c.Printf("  CLEAN ")
+				c.Printf("CLEAN   ")
 				fmt.Println(*path)
 			} else {
 				c := color.New(color.Bold, color.FgYellow)
 				c.Printf("UNCLEAN ")
 				fmt.Println(*path)
+				fmt.Printf(stat.String())
 			}
 		}
 	}
