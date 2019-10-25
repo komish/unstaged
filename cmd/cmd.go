@@ -15,6 +15,7 @@ import (
 	"github.com/komish/unstaged/version"
 	"github.com/spf13/pflag"
 	"gopkg.in/src-d/go-git.v4"
+	"gopkg.in/src-d/go-git.v4/plumbing"
 	"gopkg.in/yaml.v2"
 )
 
@@ -100,15 +101,48 @@ func Run() int {
 		}
 		if stat, err := wt.Status(); err == nil {
 			if stat.IsClean() {
-				c := color.New(color.Bold, color.FgCyan)
-				c.Printf("CLEAN   ")
-				fmt.Println(*path)
+				// check origin/master
+				// TODO(komish): make this configurable
+				revision := plumbing.Revision("origin/master")
+				revisionHash, err := repo.ResolveRevision(revision)
+				if err != nil {
+					fmt.Println(err)
+					return 17
+				}
+				// get a revision object from the hash.
+				revisionCommit, err := repo.CommitObject(*revisionHash)
+				if err != nil {
+					fmt.Println(err)
+					return 19
+				}
+				// get the current HEAD reference
+				headRef, err := repo.Head()
+				if err != nil {
+					fmt.Println(err)
+					return 20
+				}
+				// convert to commit object
+				headCommit, err := repo.CommitObject(headRef.Hash())
+				if err != nil {
+					fmt.Println(err)
+					return 21
+				}
+				if isAncestor, _ := headCommit.IsAncestor(revisionCommit); !isAncestor {
+					c := color.New(color.Bold, color.FgMagenta)
+					c.Printf("AHEAD   ")
+					fmt.Println(*path)
+				} else {
+					c := color.New(color.Bold, color.FgCyan)
+					c.Printf("CLEAN   ")
+					fmt.Println(*path)
+				}
+
 			} else {
 				c := color.New(color.Bold, color.FgYellow)
 				c.Printf("UNCLEAN ")
 				fmt.Println(*path)
 				if verbose {
-					fmt.Printf(stat.String())
+					c.Printf(stat.String())
 				}
 			}
 		}
@@ -116,7 +150,7 @@ func Run() int {
 
 	for _, prepo := range problemRepos {
 		c := color.New(color.Bold, color.FgRed)
-		c.Printf("  ERROR ")
+		c.Printf("ERROR   ")
 		fmt.Printf("%s ==> %s\n", *prepo.r, prepo.e)
 	}
 	return 0
