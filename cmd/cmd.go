@@ -129,17 +129,17 @@ func Run() int {
 				}
 				if isAncestor, _ := headCommit.IsAncestor(revisionCommit); !isAncestor {
 					c := color.New(color.Bold, color.FgMagenta)
-					c.Printf("AHEAD   ")
+					c.Printf("AHEAD  ")
 					fmt.Println(*path)
 				} else {
 					c := color.New(color.Bold, color.FgCyan)
-					c.Printf("CLEAN   ")
+					c.Printf("CLEAN  ")
 					fmt.Println(*path)
 				}
 
 			} else {
 				c := color.New(color.Bold, color.FgYellow)
-				c.Printf("UNCLEAN ")
+				c.Printf("DIRTY  ")
 				fmt.Println(*path)
 				if verbose {
 					c.Printf(stat.String())
@@ -150,7 +150,7 @@ func Run() int {
 
 	for _, prepo := range problemRepos {
 		c := color.New(color.Bold, color.FgRed)
-		c.Printf("ERROR   ")
+		c.Printf("ERROR  ")
 		fmt.Printf("%s ==> %s\n", *prepo.r, prepo.e)
 	}
 	return 0

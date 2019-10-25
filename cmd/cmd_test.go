@@ -12,32 +12,32 @@ import (
 
 func TestOpenReposAndFilter(t *testing.T) {
 
-	git_repo := "../.git"
-	not_git_repo := "./hello"
-	not_even_dir := "lol"
+	gitRepo := "../.git"
+	notGitRepo := "./hello"
+	notEvenDir := "lol"
 
-	repoList_work := Repolist{
-		&git_repo,
+	repoListWork := Repolist{
+		&gitRepo,
 	}
 
-	repoList_not_repo := Repolist{
-		&not_git_repo,
+	repoListNotRepo := Repolist{
+		&notGitRepo,
 	}
 
-	repoList_not_url := Repolist{
-		&not_even_dir,
+	repoListNotURL := Repolist{
+		&notEvenDir,
 	}
 
-	fr, er := OpenReposAndFilter(repoList_work)
+	fr, er := OpenReposAndFilter(repoListWork)
 	assert.Equal(t, 0, len(er))
-	assert.EqualValues(t, repoList_work, fr)
+	assert.EqualValues(t, repoListWork, fr)
 
 	errorString := errors.New("repository does not exist")
-	fr, er = OpenReposAndFilter(repoList_not_repo)
+	fr, er = OpenReposAndFilter(repoListNotRepo)
 	assert.Equal(t, 1, len(er))
 	assert.EqualValues(t, errorString, er[0].e)
 
-	fr, er = OpenReposAndFilter(repoList_not_url)
+	fr, er = OpenReposAndFilter(repoListNotURL)
 	assert.Equal(t, 1, len(er))
 	assert.EqualValues(t, errorString, er[0].e)
 
