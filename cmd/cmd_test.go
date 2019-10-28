@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"errors"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -44,6 +45,8 @@ func TestOpenReposAndFilter(t *testing.T) {
 }
 
 func TestRun(t *testing.T) {
+	// We need an argument for the script to return 0
+	os.Args = []string{"."}
 	i := Run()
 	assert.Equal(t, 0, i)
 }

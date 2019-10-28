@@ -10,9 +10,9 @@ GIT_COMMIT_HASH=${UNSTAGED_COMMIT_HASH}
 VERSION=${UNSTAGED_VERSION}
 
 test:
-	go test ./...
+	make build
+	go test -v ./...
 	gofmt -l ./
-	go build ./
 
 build:
 	make build-linux
