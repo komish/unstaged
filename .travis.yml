@@ -10,7 +10,7 @@ install: true
 script: 
   - go build
   - go test -v ./...
-
+  - gofmt -l ./
 
 # calls goreleaser
 # deploy:

@@ -80,7 +80,7 @@ func Run() int {
 		fmt.Printf("Not enough arguments provided and the config file ")
 		fmt.Printf("at path %s was not parsed successfully\n(Error: %s).\n\n", configPath, err)
 		PrintHelp()
-		return 15
+		return 0
 	}
 
 	var d RepoFileInput

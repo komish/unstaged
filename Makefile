@@ -9,11 +9,6 @@ GIT_COMMIT_HASH=${UNSTAGED_COMMIT_HASH}
 # export UNSTAGED_VERSION="x.x.x"
 VERSION=${UNSTAGED_VERSION}
 
-test:
-	make build
-	go test -v ./...
-	gofmt -l ./
-
 build:
 	make build-linux
 	make build-darwin
