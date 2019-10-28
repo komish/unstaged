@@ -1,6 +1,8 @@
 # Unstaged
 Check for unstaged changes across a set of git repositories that you configure.
 
+[![Build Status](https://travis-ci.com/komish/unstaged.svg?branch=master)](https://travis-ci.com/komish/unstaged)
+
 ### Usage:
 
 ```
