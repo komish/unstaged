@@ -1,8 +1,7 @@
 language: go
 env:
   # BUG(komish): Workaround, see https://github.com/komish/unstaged/issues/14
-  - UNSTAGED_COMMIT_HASH="-"
-  - UNSTAGED_VERSION="-"
+  - UNSTAGED_COMMIT_HASH="-" UNSTAGED_VERSION="dev"
 go:
   - 1.12.x
   - 1.13.x
