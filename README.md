@@ -8,6 +8,7 @@ Check for unstaged changes across a set of git repositories that you configure.
 ```
 unstaged [--flags] [/path/to/repo]
 
+  -f, --file      config file path
   -h, --help      display help
   -v, --verbose   display verbose output
       --version   display version
