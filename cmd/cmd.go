@@ -23,13 +23,14 @@ func init() {
 	pflag.BoolVarP(&showHelp, "help", "h", false, "display help")
 	pflag.BoolVar(&showVers, "version", false, "display version")
 	pflag.BoolVarP(&verbose, "verbose", "v", false, "display verbose output")
+	pflag.StringVarP(&configPath, "file", "f", configFilePath(), "config file")
 }
 
 var (
 	showHelp   bool
 	showVers   bool
 	verbose    bool
-	configPath = path.Join(configDir(), ".unstaged.yaml")
+	configPath string
 )
 
 // Repo is an indirect reference to a string.
@@ -205,4 +206,8 @@ func configDir() string {
 		return "./"
 	}
 	return path.Join(configdir, "unstaged")
+}
+
+func configFilePath() string {
+	return path.Join(configDir(), ".unstaged.yaml")
 }
